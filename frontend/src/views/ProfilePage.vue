@@ -14,9 +14,10 @@
           <label>新密码</label>
           <div class="field-wrap"><input v-model="newPassword" type="password" placeholder="6-18 个字符" /></div>
         </div>
-        <div class="text-field">
+        <div class="text-field" :class="{ 'field-error': confirmError }">
           <label>确认新密码</label>
           <div class="field-wrap"><input v-model="confirmPassword" type="password" placeholder="再次输入新密码" /></div>
+          <p v-if="confirmError" class="input-error">{{ confirmError }}</p>
         </div>
         <p v-if="error" class="msg-error">{{ error }}</p>
         <p v-if="success" class="msg-success">{{ success }}</p>
@@ -27,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import api from '../api'
 
@@ -38,6 +39,12 @@ const confirmPassword = ref('')
 const error = ref('')
 const success = ref('')
 
+const confirmError = computed(() => {
+  if (!confirmPassword.value) return ''
+  if (confirmPassword.value !== newPassword.value) return '两次密码不一致'
+  return ''
+})
+
 async function changePassword() {
   error.value = ''
   success.value = ''
@@ -45,8 +52,8 @@ async function changePassword() {
     error.value = '请填写所有字段'
     return
   }
-  if (newPassword.value !== confirmPassword.value) {
-    error.value = '两次新密码不一致'
+  if (confirmError.value) {
+    error.value = confirmError.value
     return
   }
   if (newPassword.value.length < 6 || newPassword.value.length > 18) {
@@ -78,4 +85,6 @@ async function changePassword() {
 h2 { text-align: center; font-size: 28px; font-weight: 400; margin-bottom: 2px; color: var(--md-sys-color-on-surface); }
 .profile-subtitle { text-align: center; font-size: 14px; color: var(--md-sys-color-on-surface-variant); margin-bottom: 32px; }
 .profile-section h3 { font-size: 18px; font-weight: 500; margin-bottom: 16px; color: var(--md-sys-color-on-surface); }
+.field-error input { border-color: var(--md-sys-color-error) !important; }
+.input-error { color: var(--md-sys-color-error); font-size: 12px; margin-top: 4px; }
 </style>

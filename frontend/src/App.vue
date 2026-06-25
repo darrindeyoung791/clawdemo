@@ -3,6 +3,9 @@
     <header v-if="authStore.isLoggedIn" class="app-bar">
       <div class="app-bar-inner">
         <div class="app-bar-start">
+          <button class="icon-btn hamburger-btn" @click="showDrawer = !showDrawer">
+            <span class="material-icons">menu</span>
+          </button>
           <span class="material-icons app-bar-icon">science</span>
           <span class="app-bar-title">实验室设备管理系统</span>
         </div>
@@ -37,6 +40,34 @@
         </div>
       </div>
     </header>
+
+    <div v-if="showDrawer" class="drawer-overlay" @click="showDrawer = false"></div>
+    <aside class="drawer" :class="{ open: showDrawer }">
+      <div class="drawer-header">
+        <span class="material-icons" style="font-size:24px;color:var(--md-sys-color-primary)">science</span>
+        <span style="font-size:18px;font-weight:500">实验室设备管理系统</span>
+      </div>
+      <nav class="drawer-nav">
+        <router-link to="/equipment" class="drawer-item" :class="{ active: $route.path.startsWith('/equipment') }" @click="showDrawer = false">
+          <span class="material-icons">inventory_2</span> 设备列表
+        </router-link>
+        <router-link to="/my-borrows" class="drawer-item" :class="{ active: $route.path === '/my-borrows' }" @click="showDrawer = false">
+          <span class="material-icons">assignment</span> 我的借还
+        </router-link>
+        <template v-if="authStore.isAdmin">
+          <div class="drawer-divider"></div>
+          <router-link to="/admin/equipment" class="drawer-item" :class="{ active: $route.path === '/admin/equipment' }" @click="showDrawer = false">
+            <span class="material-icons">settings</span> 设备管理
+          </router-link>
+          <router-link to="/admin/approvals" class="drawer-item" :class="{ active: $route.path === '/admin/approvals' }" @click="showDrawer = false">
+            <span class="material-icons">fact_check</span> 审批管理
+          </router-link>
+          <router-link to="/admin/users" class="drawer-item" :class="{ active: $route.path === '/admin/users' }" @click="showDrawer = false">
+            <span class="material-icons">group</span> 用户管理
+          </router-link>
+        </template>
+      </nav>
+    </aside>
     <main>
       <router-view />
     </main>
@@ -52,6 +83,7 @@ const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 const isDark = ref(false)
+const showDrawer = ref(false)
 
 function toggleTheme() {
   isDark.value = !isDark.value
@@ -261,4 +293,46 @@ main { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
 .msg-error { color: var(--md-sys-color-error); font-size: 13px; margin-bottom: 8px; }
 .msg-success { color: var(--md-sys-color-primary); font-size: 13px; margin-bottom: 8px; }
 .msg-empty { text-align: center; padding: 48px 16px; color: var(--md-sys-color-on-surface-variant); font-size: 14px; }
+
+/* Hamburger (hidden on wide screens) */
+.hamburger-btn { display: none; }
+
+/* Drawer overlay + panel */
+.drawer-overlay {
+  position: fixed; inset: 0; background: var(--md-sys-color-scrim); opacity: 0.4;
+  z-index: 300; display: none;
+}
+.drawer {
+  position: fixed; top: 0; left: 0; bottom: 0; width: 300px;
+  background: var(--md-sys-color-surface-container-high);
+  z-index: 301; transform: translateX(-100%);
+  transition: transform 0.2s; display: none;
+  flex-direction: column;
+}
+.drawer.open { transform: translateX(0); }
+.drawer-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 20px 24px; border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.drawer-nav { padding: 8px 12px; flex: 1; }
+.drawer-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 16px; height: 48px; border-radius: 24px;
+  font-size: 14px; font-weight: 500; color: var(--md-sys-color-on-surface-variant);
+  transition: background 0.15s;
+}
+.drawer-item:hover { background: var(--md-sys-color-surface-container-high); }
+.drawer-item.active { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+.drawer-item .material-icons { font-size: 20px; }
+.drawer-divider { height: 1px; background: var(--md-sys-color-outline-variant); margin: 8px 16px; }
+
+/* Narrow screens */
+@media (max-width: 767px) {
+  .hamburger-btn { display: flex; }
+  .app-bar-icon, .app-bar-title { display: none; }
+  .app-bar-nav { display: none; }
+  .drawer-overlay, .drawer { display: flex; }
+  .app-bar-start { gap: 0; }
+  .user-chip span:last-child { display: none; }
+}
 </style>
