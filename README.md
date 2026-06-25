@@ -9,6 +9,29 @@
 - **用户系统**：开放注册、JWT 登录、角色权限（普通用户 / 管理员）
 - **前端**：响应式 Material Design 3 风格，支持明暗主题
 
+## 图片展示
+
+**用户模式**
+
+| ![](docs/img/1.webp) | ![](docs/img/2.webp) |
+| :---: | :---: |
+| ![](docs/img/3.webp) | ![](docs/img/4.webp) |
+| ![](docs/img/5.webp) | ![](docs/img/6.webp) |
+| ![](docs/img/7.webp) |  |
+
+---
+
+**管理员模式**
+
+| ![](docs/img/8.webp) | ![](docs/img/9.webp) |
+| :---: | :---: |
+| ![](docs/img/10.webp) | ![](docs/img/11.webp) |
+| ![](docs/img/12.webp) |  |
+
+
+
+
+
 ## 技术栈
 
 | 层级 | 技术 |
@@ -74,6 +97,50 @@ CREATE TABLE IF NOT EXISTS `borrow_record` (
     FOREIGN KEY (`user_id`) REFERENCES `user`(`id`),
     FOREIGN KEY (`equipment_id`) REFERENCES `equipment`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+### 实体-关系图
+
+```mermaid
+erDiagram
+    USER ||--o{ BORROW_RECORD : "发起"
+    EQUIPMENT ||--o{ BORROW_RECORD : "被借用"
+
+    USER {
+        varchar(36) id PK "主键UUID"
+        varchar(100) username "用户名唯一"
+        varchar(255) password "加密密码"
+        varchar(100) display_name "显示名称"
+        varchar(20) role "角色 ROLE_USER/ROLE_ADMIN"
+        datetime created_at "创建时间"
+        datetime updated_at "更新时间"
+    }
+
+    EQUIPMENT {
+        bigint id PK "设备ID自增"
+        varchar(200) name "设备名称"
+        varchar(50) code "设备编号唯一"
+        varchar(30) category "分类 INSTRUMENT/CONSUMABLE/SOFTWARE/OTHER"
+        varchar(200) location "存放位置"
+        int total_quantity "总数量"
+        int available_quantity "可用数量"
+        varchar(30) status "状态 AVAILABLE/MAINTENANCE/RETIRED"
+        datetime created_at "创建时间"
+        datetime updated_at "更新时间"
+    }
+
+    BORROW_RECORD {
+        bigint id PK "记录ID自增"
+        varchar(36) user_id FK "用户ID"
+        bigint equipment_id FK "设备ID"
+        int quantity "借用数量"
+        datetime start_time "借用开始时间"
+        datetime end_time "借用结束时间"
+        varchar(30) status "状态 PENDING/APPROVED/REJECTED/RETURNED"
+        varchar(500) reject_reason "拒绝原因"
+        datetime created_at "申请时间"
+        datetime updated_at "更新时间"
+    }
 ```
 
 ### 后端
