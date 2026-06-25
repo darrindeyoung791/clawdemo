@@ -1,0 +1,46 @@
+CREATE TABLE IF NOT EXISTS `user` (
+    `id` VARCHAR(36) PRIMARY KEY,
+    `username` VARCHAR(50) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
+    `display_name` VARCHAR(100) NOT NULL,
+    `role` VARCHAR(20) NOT NULL DEFAULT 'ROLE_USER',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `equipment` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(200) NOT NULL,
+    `code` VARCHAR(50) NOT NULL UNIQUE,
+    `category` VARCHAR(30) NOT NULL COMMENT 'INSTRUMENT/CONSUMABLE/SOFTWARE/OTHER',
+    `location` VARCHAR(200) DEFAULT '',
+    `total_quantity` INT NOT NULL DEFAULT 0,
+    `available_quantity` INT NOT NULL DEFAULT 0,
+    `status` VARCHAR(30) NOT NULL DEFAULT 'AVAILABLE' COMMENT 'AVAILABLE/MAINTENANCE/RETIRED',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `borrow_record` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` VARCHAR(36) NOT NULL,
+    `equipment_id` BIGINT NOT NULL,
+    `quantity` INT NOT NULL DEFAULT 1,
+    `start_time` DATETIME DEFAULT NULL,
+    `end_time` DATETIME DEFAULT NULL,
+    `status` VARCHAR(30) NOT NULL DEFAULT 'PENDING' COMMENT 'PENDING/APPROVED/REJECTED/RETURNED',
+    `reject_reason` VARCHAR(500) DEFAULT '',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES `user`(`id`),
+    FOREIGN KEY (`equipment_id`) REFERENCES `equipment`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Preload equipment data (code generated as UUID in service; static UUIDs for demo)
+INSERT INTO `equipment` (`name`, `code`, `category`, `location`, `total_quantity`, `available_quantity`, `status`) VALUES
+('电子显微镜', UUID(), 'INSTRUMENT', 'A栋101室', 3, 3, 'AVAILABLE'),
+('离心机', UUID(), 'INSTRUMENT', 'A栋102室', 5, 5, 'AVAILABLE'),
+('移液枪套装', UUID(), 'CONSUMABLE', 'B栋201室', 20, 20, 'AVAILABLE'),
+('实验手套（箱）', UUID(), 'CONSUMABLE', 'B栋202室', 50, 50, 'AVAILABLE'),
+('Matlab 授权', UUID(), 'SOFTWARE', '网络授权', 10, 10, 'AVAILABLE'),
+('Office 365 授权', UUID(), 'SOFTWARE', '网络授权', 30, 30, 'AVAILABLE');
