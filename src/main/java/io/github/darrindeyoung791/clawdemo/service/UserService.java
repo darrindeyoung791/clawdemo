@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,8 +22,17 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     public void register(String username, String password, String displayName) {
-        if (userDao.countByUsernameOrDisplayName(username, displayName) > 0) {
-            throw new RuntimeException("Username or display name already exists");
+        if (userDao.findByUsername(username) != null) {
+            throw new RuntimeException("Username already exists");
+        }
+        if (userDao.findByDisplayName(displayName) != null) {
+            throw new RuntimeException("Display name already exists");
+        }
+        if (userDao.findByUsername(displayName) != null) {
+            throw new RuntimeException("Display name conflicts with existing username");
+        }
+        if (userDao.findByDisplayName(username) != null) {
+            throw new RuntimeException("Username conflicts with existing display name");
         }
         User user = new User();
         user.setId(UUID.randomUUID().toString());
@@ -31,6 +41,14 @@ public class UserService {
         user.setDisplayName(displayName);
         user.setRole("ROLE_USER");
         userDao.insert(user);
+    }
+
+    public List<User> listAll() {
+        return userDao.findAll();
+    }
+
+    public void deleteUser(String id) {
+        userDao.deleteById(id);
     }
 
     @PostConstruct

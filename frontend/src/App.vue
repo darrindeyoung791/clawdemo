@@ -20,6 +20,9 @@
             <router-link to="/admin/approvals" class="nav-chip" :class="{ active: $route.path === '/admin/approvals' }">
               <span class="material-icons">fact_check</span> 审批管理
             </router-link>
+            <router-link to="/admin/users" class="nav-chip" :class="{ active: $route.path === '/admin/users' }">
+              <span class="material-icons">group</span> 用户管理
+            </router-link>
           </template>
         </nav>
         <div class="app-bar-end">

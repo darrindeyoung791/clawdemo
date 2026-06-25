@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/equipment/**").authenticated()
                 .requestMatchers("/api/equipment/**").hasRole("ADMIN")
+                .requestMatchers("/api/users/**").hasRole("ADMIN")
                 .requestMatchers("/api/borrows/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )

@@ -10,6 +10,7 @@ const routes = [
   { path: '/my-borrows', component: () => import('../views/MyBorrowsPage.vue'), meta: { auth: true } },
   { path: '/admin/equipment', component: () => import('../views/AdminEquipmentPage.vue'), meta: { auth: true, admin: true } },
   { path: '/admin/approvals', component: () => import('../views/AdminApprovalsPage.vue'), meta: { auth: true, admin: true } },
+  { path: '/admin/users', component: () => import('../views/AdminUsersPage.vue'), meta: { auth: true, admin: true } },
 ]
 
 const router = createRouter({ history: createWebHistory(), routes })

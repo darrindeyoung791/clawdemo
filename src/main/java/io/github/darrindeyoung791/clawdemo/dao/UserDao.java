@@ -20,6 +20,21 @@ public class UserDao {
         return list.isEmpty() ? null : list.get(0);
     }
 
+    public User findByDisplayName(String displayName) {
+        List<User> list = jdbc.query("SELECT * FROM user WHERE display_name = ?",
+                new BeanPropertyRowMapper<>(User.class), displayName);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    public List<User> findAll() {
+        return jdbc.query("SELECT * FROM user ORDER BY created_at DESC",
+                new BeanPropertyRowMapper<>(User.class));
+    }
+
+    public void deleteById(String id) {
+        jdbc.update("DELETE FROM user WHERE id = ?", id);
+    }
+
     public User findByUsernameOrDisplayName(String name) {
         List<User> list = jdbc.query("SELECT * FROM user WHERE username = ? OR display_name = ?",
                 new BeanPropertyRowMapper<>(User.class), name, name);
