@@ -59,6 +59,8 @@ mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS clawdemo DEFAULT CHARACTER SE
 
 ### 建表语句
 
+详细的建表语句见 [此处](clawdemo_dump.sql)。
+
 ```sql
 CREATE TABLE IF NOT EXISTS `user` (
     `id` VARCHAR(36) PRIMARY KEY,
