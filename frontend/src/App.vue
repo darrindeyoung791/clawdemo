@@ -29,10 +29,10 @@
           <button class="icon-btn" @click="toggleTheme" :title="isDark ? '切换亮色' : '切换暗色'">
             <span class="material-icons">{{ isDark ? 'light_mode' : 'dark_mode' }}</span>
           </button>
-          <div class="user-chip">
+          <router-link to="/profile" class="user-chip">
             <span class="material-icons">account_circle</span>
             <span>{{ authStore.user?.displayName }}</span>
-          </div>
+          </router-link>
           <button class="text-btn" @click="logout">退出</button>
         </div>
       </div>

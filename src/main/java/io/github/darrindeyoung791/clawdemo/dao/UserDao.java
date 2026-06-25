@@ -31,6 +31,16 @@ public class UserDao {
                 new BeanPropertyRowMapper<>(User.class));
     }
 
+    public User findById(String id) {
+        List<User> list = jdbc.query("SELECT * FROM user WHERE id = ?",
+                new BeanPropertyRowMapper<>(User.class), id);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    public void updatePassword(String id, String password) {
+        jdbc.update("UPDATE user SET password = ? WHERE id = ?", password, id);
+    }
+
     public void deleteById(String id) {
         jdbc.update("DELETE FROM user WHERE id = ?", id);
     }

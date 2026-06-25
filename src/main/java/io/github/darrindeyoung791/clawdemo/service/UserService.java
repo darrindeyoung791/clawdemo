@@ -49,6 +49,20 @@ public class UserService {
         return userDao.findAll();
     }
 
+    public void changePassword(String userId, String oldPassword, String newPassword) {
+        User user = userDao.findById(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new RuntimeException("Old password is incorrect");
+        }
+        if (newPassword.length() < 6 || newPassword.length() > 18) {
+            throw new RuntimeException("New password must be 6-18 characters");
+        }
+        userDao.updatePassword(userId, passwordEncoder.encode(newPassword));
+    }
+
     public void deleteUser(String id) {
         borrowRecordDao.deleteByUserId(id);
         userDao.deleteById(id);

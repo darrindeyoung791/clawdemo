@@ -3,6 +3,7 @@ package io.github.darrindeyoung791.clawdemo.controller;
 import io.github.darrindeyoung791.clawdemo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -34,6 +35,22 @@ public class AuthController {
         try {
             userService.register(username, password, displayName);
             return ResponseEntity.ok(Map.of("message", "Registration successful"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> body) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        String oldPassword = body.get("oldPassword");
+        String newPassword = body.get("newPassword");
+        if (oldPassword == null || newPassword == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields"));
+        }
+        try {
+            userService.changePassword(userId, oldPassword, newPassword);
+            return ResponseEntity.ok(Map.of("message", "Password changed"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
