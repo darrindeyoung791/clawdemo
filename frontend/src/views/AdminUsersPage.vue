@@ -21,7 +21,8 @@
           </tr>
         </tbody>
       </table>
-      <p v-if="list.length === 0" class="msg-empty">暂无用户</p>
+      <p v-if="errorMsg" class="msg-error">错误：{{ errorMsg }}</p>
+      <p v-else-if="list.length === 0" class="msg-empty">暂无用户</p>
     </div>
   </div>
 </template>
@@ -31,10 +32,17 @@ import { ref, onMounted } from 'vue'
 import api from '../api'
 
 const list = ref([])
+const errorMsg = ref('')
 
 async function fetchList() {
-  const res = await api.get('/users')
-  list.value = res.data
+  try {
+    errorMsg.value = ''
+    const res = await api.get('/users')
+    list.value = res.data || []
+  } catch (e) {
+    errorMsg.value = e.response?.data?.error || e.message || '请求失败'
+    list.value = []
+  }
 }
 
 async function doDelete(id) {
