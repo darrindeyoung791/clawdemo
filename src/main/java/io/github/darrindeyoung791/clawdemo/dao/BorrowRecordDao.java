@@ -54,6 +54,10 @@ public class BorrowRecordDao {
                 status, rejectReason, id);
     }
 
+    public void deleteByUserId(String userId) {
+        jdbc.update("DELETE FROM borrow_record WHERE user_id=?", userId);
+    }
+
     public void updateStatusAndStartTime(Long id, String status) {
         jdbc.update("UPDATE borrow_record SET status=?, start_time=NOW() WHERE id=?", status, id);
     }

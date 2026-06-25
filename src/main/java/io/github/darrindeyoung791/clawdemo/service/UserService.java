@@ -1,5 +1,6 @@
 package io.github.darrindeyoung791.clawdemo.service;
 
+import io.github.darrindeyoung791.clawdemo.dao.BorrowRecordDao;
 import io.github.darrindeyoung791.clawdemo.dao.UserDao;
 import io.github.darrindeyoung791.clawdemo.entity.User;
 import io.github.darrindeyoung791.clawdemo.util.JwtUtil;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserDao userDao;
+    private final BorrowRecordDao borrowRecordDao;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -48,6 +50,7 @@ public class UserService {
     }
 
     public void deleteUser(String id) {
+        borrowRecordDao.deleteByUserId(id);
         userDao.deleteById(id);
     }
 
