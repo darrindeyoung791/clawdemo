@@ -22,11 +22,14 @@ public class AuthController {
         if (username == null || password == null || displayName == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields"));
         }
-        if (username.length() <= 2) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Username must be longer than 2 characters"));
+        if (username.length() <= 2 || username.length() > 100) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Username must be 3-100 characters"));
         }
-        if (password.length() <= 6) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Password must be longer than 6 characters"));
+        if (displayName.length() > 100) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Display name must be at most 100 characters"));
+        }
+        if (password.length() < 6 || password.length() > 18) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Password must be 6-18 characters"));
         }
         try {
             userService.register(username, password, displayName);

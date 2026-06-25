@@ -87,7 +87,7 @@ function search() { clearTimeout(searchTimer); searchTimer = setTimeout(fetchLis
 async function fetchList() {
   const params = {}
   if (keyword.value) params.keyword = keyword.value
-  const res = await api.get('/equipment/all', { params })
+  const res = await api.get('/equipment', { params })
   list.value = res.data
 }
 

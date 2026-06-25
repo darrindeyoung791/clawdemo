@@ -117,6 +117,7 @@ a { color: inherit; text-decoration: none; }
   height: 36px; padding: 0 12px; border-radius: 18px; border: none;
   background: transparent; color: var(--md-sys-color-primary);
   font-size: 14px; font-weight: 500; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
   transition: background 0.15s;
 }
 .text-btn:hover { background: var(--md-sys-color-primary-container); }

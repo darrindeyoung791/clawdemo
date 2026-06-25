@@ -6,15 +6,15 @@
       <p class="auth-subtitle">注册实验室设备管理系统</p>
       <div class="text-field">
         <label>用户名</label>
-        <div class="field-wrap"><input v-model="username" type="text" placeholder="至少 3 个字符" /></div>
+        <div class="field-wrap"><input v-model="username" type="text" maxlength="100" placeholder="3-100 个字符" /></div>
       </div>
       <div class="text-field">
         <label>显示名称</label>
-        <div class="field-wrap"><input v-model="displayName" type="text" placeholder="你的姓名或昵称" /></div>
+        <div class="field-wrap"><input v-model="displayName" type="text" maxlength="100" placeholder="最多 100 个字符" /></div>
       </div>
       <div class="text-field">
         <label>密码</label>
-        <div class="field-wrap"><input v-model="password" type="password" placeholder="至少 7 个字符" /></div>
+        <div class="field-wrap"><input v-model="password" type="password" maxlength="18" placeholder="6-18 个字符" /></div>
       </div>
       <p v-if="error" class="msg-error">{{ error }}</p>
       <p v-if="success" class="msg-success">{{ success }}</p>
