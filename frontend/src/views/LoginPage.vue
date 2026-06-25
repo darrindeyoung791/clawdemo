@@ -1,18 +1,20 @@
 <template>
   <div class="auth-page">
     <div class="auth-card">
-      <h2>登录</h2>
-      <div class="field">
+      <div class="auth-icon"><span class="material-icons">science</span></div>
+      <h2>欢迎回来</h2>
+      <p class="auth-subtitle">登录实验室设备管理系统</p>
+      <div class="text-field">
         <label>用户名</label>
-        <input v-model="username" type="text" />
+        <div class="field-wrap"><input v-model="username" type="text" placeholder="输入用户名" @keyup.enter="login" /></div>
       </div>
-      <div class="field">
+      <div class="text-field">
         <label>密码</label>
-        <input v-model="password" type="password" @keyup.enter="login" />
+        <div class="field-wrap"><input v-model="password" type="password" placeholder="输入密码" @keyup.enter="login" /></div>
       </div>
-      <p v-if="error" class="error">{{ error }}</p>
-      <button class="btn-primary" @click="login">登录</button>
-      <p class="link">没有账号？<router-link to="/register">注册</router-link></p>
+      <p v-if="error" class="msg-error">{{ error }}</p>
+      <button class="filled-btn" style="width:100%;justify-content:center;margin-top:8px" @click="login">登录</button>
+      <p class="auth-link">还没有账号？<router-link to="/register">注册</router-link></p>
     </div>
   </div>
 </template>
@@ -42,25 +44,17 @@ async function login() {
 </script>
 
 <style scoped>
-.auth-page { display: flex; justify-content: center; align-items: center; min-height: 60vh; }
+.auth-page { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
 .auth-card {
   background: var(--md-sys-color-surface-container-low);
-  padding: 32px; border-radius: 12px; width: 100%; max-width: 380px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 28px; padding: 40px 32px 32px;
+  width: 100%; max-width: 380px;
 }
-h2 { margin-bottom: 24px; color: var(--md-sys-color-on-surface); }
-.field { margin-bottom: 16px; }
-.field label { display: block; font-size: 14px; margin-bottom: 4px; color: var(--md-sys-color-on-surface-variant); }
-.field input {
-  width: 100%; padding: 10px 12px; border: 1px solid var(--md-sys-color-outline);
-  border-radius: 8px; font-size: 14px; background: var(--md-sys-color-surface);
-  color: var(--md-sys-color-on-surface);
-}
-.btn-primary {
-  width: 100%; padding: 10px; border: none; border-radius: 8px;
-  background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary);
-  font-size: 15px; cursor: pointer; margin-top: 8px;
-}
-.error { color: var(--md-sys-color-error); font-size: 13px; margin-bottom: 8px; }
-.link { margin-top: 16px; font-size: 13px; text-align: center; color: var(--md-sys-color-on-surface-variant); }
-.link a { color: var(--md-sys-color-primary); }
+.auth-icon { text-align: center; margin-bottom: 12px; }
+.auth-icon .material-icons { font-size: 48px; color: var(--md-sys-color-primary); }
+h2 { text-align: center; font-size: 28px; font-weight: 400; margin-bottom: 4px; color: var(--md-sys-color-on-surface); }
+.auth-subtitle { text-align: center; font-size: 14px; color: var(--md-sys-color-on-surface-variant); margin-bottom: 28px; }
+.auth-link { margin-top: 20px; font-size: 14px; text-align: center; color: var(--md-sys-color-on-surface-variant); }
+.auth-link a { color: var(--md-sys-color-primary); font-weight: 500; }
 </style>

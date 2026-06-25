@@ -1,58 +1,67 @@
 <template>
   <div>
-    <div class="header-row">
+    <div class="page-header">
       <h2>设备管理</h2>
-      <button class="btn-primary" @click="openAdd">添加设备</button>
+      <button class="filled-btn" @click="openAdd"><span class="material-icons">add</span> 添加设备</button>
     </div>
-    <div class="toolbar">
-      <input v-model="keyword" placeholder="搜索设备" @input="search" class="search-input" />
+    <div class="filter-bar">
+      <div class="text-field" style="width:300px">
+        <label>搜索</label>
+        <div class="field-wrap"><input v-model="keyword" placeholder="搜索设备" @input="search" /></div>
+      </div>
     </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>名称</th>
-          <th>编号</th>
-          <th>分类</th>
-          <th>位置</th>
-          <th>总量</th>
-          <th>可用</th>
-          <th>状态</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in list" :key="item.id">
-          <td>{{ item.name }}</td>
-          <td>{{ item.code }}</td>
-          <td>{{ CATEGORY_LABELS[item.category] }}</td>
-          <td>{{ item.location }}</td>
-          <td>{{ item.totalQuantity }}</td>
-          <td>{{ item.availableQuantity }}</td>
-          <td>{{ STATUS_LABELS[item.status] }}</td>
-          <td>
-            <button class="btn-sm" @click="openEdit(item)">编辑</button>
-            <button class="btn-sm btn-danger" @click="doDelete(item.id)">删除</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div style="background:var(--md-sys-color-surface-container-low);border-radius:16px;border:1px solid var(--md-sys-color-outline-variant);overflow:hidden">
+      <table class="data-table">
+        <thead>
+          <tr><th>名称</th><th>编号</th><th>分类</th><th>位置</th><th>总量</th><th>可用</th><th>状态</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in list" :key="item.id">
+            <td style="font-weight:500">{{ item.name }}</td>
+            <td style="font-size:13px;color:var(--md-sys-color-on-surface-variant)">{{ item.code }}</td>
+            <td>{{ CATEGORY_LABELS[item.category] }}</td>
+            <td>{{ item.location }}</td>
+            <td>{{ item.totalQuantity }}</td>
+            <td>{{ item.availableQuantity }}</td>
+            <td><span class="status-badge" :class="item.status">{{ STATUS_LABELS[item.status] }}</span></td>
+            <td>
+              <div style="display:flex;gap:4px">
+                <button class="sm-btn sm-btn-ghost" @click="openEdit(item)"><span class="material-icons" style="font-size:16px">edit</span></button>
+                <button class="sm-btn sm-btn-ghost" @click="doDelete(item.id)"><span class="material-icons" style="font-size:16px">delete</span></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p v-if="list.length === 0" class="msg-empty">暂无设备</p>
+    </div>
 
-    <div v-if="showForm" class="modal-overlay" @click.self="showForm = false">
-      <div class="modal">
-        <h3>{{ editing ? '编辑设备' : '添加设备' }}</h3>
-        <div class="field"><label>名称</label><input v-model="form.name" /></div>
-        <div class="field">
-          <label>分类</label>
-          <select v-model="form.category" class="select-input">
+    <div v-if="showForm" class="modal-overlay open" @click.self="showForm = false"></div>
+    <div v-if="showForm" class="modal">
+      <h3>{{ editing ? '编辑设备' : '添加设备' }}</h3>
+      <div class="text-field">
+        <label>名称</label>
+        <div class="field-wrap"><input v-model="form.name" /></div>
+      </div>
+      <div class="text-field">
+        <label>分类</label>
+        <div class="field-wrap">
+          <select v-model="form.category">
             <option v-for="c in categories" :key="c" :value="c">{{ CATEGORY_LABELS[c] }}</option>
           </select>
         </div>
-        <div class="field"><label>位置</label><input v-model="form.location" /></div>
-        <div class="field"><label>总量</label><input v-model.number="form.totalQuantity" type="number" min="1" /></div>
-        <div class="modal-actions">
-          <button class="btn-text" @click="showForm = false">取消</button>
-          <button class="btn-primary" @click="save">保存</button>
-        </div>
+      </div>
+      <div class="text-field">
+        <label>位置</label>
+        <div class="field-wrap"><input v-model="form.location" /></div>
+      </div>
+      <div class="text-field">
+        <label>总量</label>
+        <div class="field-wrap"><input v-model.number="form.totalQuantity" type="number" min="1" /></div>
+      </div>
+      <div class="modal-actions">
+        <button class="text-btn" @click="showForm = false">取消</button>
+        <button class="filled-btn" @click="save">保存</button>
       </div>
     </div>
   </div>
@@ -121,31 +130,3 @@ async function doDelete(id) {
 
 onMounted(() => { fetchList(); fetchCategories() })
 </script>
-
-<style scoped>
-.header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-h2 { color: var(--md-sys-color-on-surface); }
-.toolbar { margin-bottom: 16px; }
-.search-input {
-  padding: 8px 12px; border: 1px solid var(--md-sys-color-outline); border-radius: 8px;
-  font-size: 14px; width: 300px; background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface);
-}
-.table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.table th, .table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--md-sys-color-outline-variant); }
-.table th { color: var(--md-sys-color-on-surface-variant); font-weight: 500; }
-.table td { color: var(--md-sys-color-on-surface); }
-.btn-sm { padding: 4px 12px; border: 1px solid var(--md-sys-color-outline); border-radius: 6px; background: none; cursor: pointer; font-size: 13px; margin-right: 4px; color: var(--md-sys-color-on-surface); }
-.btn-danger { color: var(--md-sys-color-error); border-color: var(--md-sys-color-error); }
-.btn-primary { padding: 8px 20px; border: none; border-radius: 8px; background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); font-size: 14px; cursor: pointer; }
-.btn-text { border: none; background: none; color: var(--md-sys-color-primary); cursor: pointer; font-size: 14px; }
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3); display: flex; align-items: center; justify-content: center; z-index: 200; }
-.modal { background: var(--md-sys-color-surface-container-high); padding: 24px; border-radius: 12px; width: 90%; max-width: 450px; }
-.modal h3 { margin-bottom: 16px; color: var(--md-sys-color-on-surface); }
-.field { margin-bottom: 12px; }
-.field label { display: block; font-size: 13px; margin-bottom: 4px; color: var(--md-sys-color-on-surface-variant); }
-.field input, .select-input {
-  width: 100%; padding: 8px 12px; border: 1px solid var(--md-sys-color-outline); border-radius: 8px;
-  font-size: 14px; background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface);
-}
-.modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px; }
-</style>
